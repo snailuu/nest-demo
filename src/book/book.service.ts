@@ -13,9 +13,13 @@ export class BookService {
   @Inject()
   dbService: DbService;
 
-  async list() {
+  async list(name: string) {
     const books: Book[] = await this.dbService.read();
-    return books;
+    return name
+      ? books.filter((book) => {
+          return book.name.includes(name);
+        })
+      : books;
   }
 
   async findById(id: number) {
@@ -29,6 +33,7 @@ export class BookService {
     const book = new Book();
     book.id = randomNum();
     book.author = createBookDto.author;
+    book.name = createBookDto.name;
     book.cover = createBookDto.cover;
     book.description = createBookDto.description;
     book.cover = createBookDto.cover;
