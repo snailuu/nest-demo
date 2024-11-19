@@ -1,12 +1,21 @@
-import { Controller, Get } from '@nestjs/common';
+
+import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { AppService } from './app.service';
 
-@Controller()
+@Controller('')
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private appService: AppService) { }
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  @Get('login')
+  @UseGuards(AuthGuard('github'))
+  async login() {
   }
+
+  @Get('callback')
+  @UseGuards(AuthGuard('github'))
+  async authCallback(@Req() req) {
+    return this.appService.findUserByGithubId(req.user.id);
+  }
+
 }
